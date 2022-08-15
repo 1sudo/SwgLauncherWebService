@@ -1,0 +1,21 @@
+{
+  "profiles": {
+    "LauncherWebService": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5198;https://localhost:7198"
+    },
+    "WSL": {
+      "commandName": "WSL2",
+      "launchUrl": "https://localhost:7198",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:5198;https://localhost:7198"
+      },
+      "distributionName": ""
+    }
+  }
+}
