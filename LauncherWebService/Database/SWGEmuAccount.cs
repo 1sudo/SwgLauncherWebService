@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
 
@@ -7,8 +6,6 @@ namespace LauncherWebService.Database;
 
 public class SwgEmuAccount
 {
-    public const bool DEBUG = true;
-
     public class AccountContext : DbContext
     {
         // ReSharper disable once InconsistentNaming
@@ -16,17 +13,19 @@ public class SwgEmuAccount
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            var connectionString = "server=localhost;user=swgemu;password=123456;database=swgemu";
+            var connection = new MySqlConnection(Program.Settings!.MySqlConnectionString);
+            var serverVersion = ServerVersion.AutoDetect(Program.Settings!.MySqlConnectionString);
 
-            if (DEBUG)
+            if (Program.Settings!.MySqlDebug)
             {
-                options.UseMySql(new MySqlConnection(connectionString), ServerVersion.AutoDetect(connectionString)).LogTo(Console.WriteLine, LogLevel.Information)
+                options.UseMySql(connection, serverVersion)
+                    .LogTo(Console.WriteLine, LogLevel.Information)
                     .EnableSensitiveDataLogging()
                     .EnableDetailedErrors();
             }
             else
             {
-                options.UseMySql(new MySqlConnection(connectionString), ServerVersion.AutoDetect(connectionString));
+                options.UseMySql(connection, serverVersion);
             }
         }
     }

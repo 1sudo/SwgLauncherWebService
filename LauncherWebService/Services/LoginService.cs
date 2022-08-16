@@ -1,5 +1,6 @@
 ﻿using Grpc.Core;
 using LauncherWebService.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace LauncherWebService.Services;
 
@@ -9,16 +10,11 @@ public class LoginService : LoginManager.LoginManagerBase
     {
         using var db = new SwgEmuAccount.AccountContext();
 
-        try
-        {
-            var account = db.accounts!.First(a => a.username == request.Username);
+        var account = await db.accounts!.FirstOrDefaultAsync(a => a.username != null && a.username == request.Username);
 
-            Console.WriteLine($"{account.username}, {account.password}, {account.salt}");
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.StackTrace);
-        }
+        if (account is null) return;
+
+        Console.WriteLine($"{account.username}, {account.password}, {account.salt}");
 
         List<string> chars = new()
         {

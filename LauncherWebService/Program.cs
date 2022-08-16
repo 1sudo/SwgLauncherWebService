@@ -1,3 +1,4 @@
+using LauncherWebService.Properties;
 using LauncherWebService.Services;
 using Microsoft.AspNetCore.HttpLogging;
 
@@ -5,9 +6,13 @@ namespace LauncherWebService;
 
 public class Program
 {
+    public static WebServiceSettings? Settings { get; set; }
+
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        Settings = builder.Configuration.GetSection("WebServiceSettings").Get<WebServiceSettings>();
 
         builder.Services.AddW3CLogging(logging =>
         {
