@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
 
@@ -6,10 +7,11 @@ namespace LauncherWebService.Database;
 
 public class SwgEmuAccount
 {
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class AccountContext : DbContext
     {
-        // ReSharper disable once InconsistentNaming
         public DbSet<Account>? accounts { get; set; }
+        public DbSet<Characters>? characters { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
@@ -30,24 +32,32 @@ public class SwgEmuAccount
         }
     }
 
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class Account
     {
         [Key]
-        // ReSharper disable once InconsistentNaming
         public int account_id { get; set; }
-        // ReSharper disable once InconsistentNaming
         public string? username { get; set; }
-        // ReSharper disable once InconsistentNaming
         public string? password { get; set; }
-        // ReSharper disable once InconsistentNaming
         public long station_id { get; set; }
-        // ReSharper disable once InconsistentNaming
         public DateTime? created { get; set; }
-        // ReSharper disable once InconsistentNaming
         public int active { get; set; }
-        // ReSharper disable once InconsistentNaming
         public int admin_level { get; set; }
-        // ReSharper disable once InconsistentNaming
         public string? salt { get; set; }
+    }
+
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    public class Characters
+    {
+        [Key]
+        public long? character_oid { get; set; }
+        public int account_id { get; set; }
+        public int galaxy_id { get; set; }
+        public string? firstname { get; set; }
+        public string? surname { get; set; }
+        public int race { get; set; }
+        public int gender { get; set; }
+        public string? template { get; set; }
+        public DateTime creation_date { get; set; }
     }
 }

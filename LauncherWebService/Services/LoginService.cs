@@ -8,28 +8,38 @@ public class LoginService : LoginManager.LoginManagerBase
 {
     public override async Task? RequestLogin(LoginRequest request, IServerStreamWriter<LoginReply> responseStream, ServerCallContext context)
     {
-        using var db = new SwgEmuAccount.AccountContext();
+        await using var db = new SwgEmuAccount.AccountContext();
 
-        var account = await db.accounts!.FirstOrDefaultAsync(a => a.username != null && a.username == request.Username);
+        var account = await db.accounts!.FirstOrDefaultAsync(a => 
+            a.username != null && a.username == request.Username);
 
-        if (account is null) return;
+        if (account?.username is null && account?.salt is not null) return;
 
-        Console.WriteLine($"{account.username}, {account.password}, {account.salt}");
+        var hashedPassword = SwgEmuAccountUtils.ComputeHash(request.Password, account?.salt!);
 
-        List<string> chars = new()
+        if (account?.password == hashedPassword)
         {
-            "Mr Potato Head",
-            "Bob Dole",
-            "Tinkerbell"
-        };
+            var characters = db.characters!.Where(c => c.account_id == account.account_id).ToList();
 
-        foreach (var ch in chars)
+            // Stream characters
+            // Status and user will be sent multiple times, unfortunate side effect. No big deal.
+            foreach (var characterName in characters.Select(character => $"{character.firstname} {character.surname}".Trim()))
+            {
+                await responseStream.WriteAsync(new LoginReply
+                {
+                    Status = "ok",
+                    Username = request.Username,
+                    Characters = { characterName }
+                });
+            }
+        }
+        else
         {
             await responseStream.WriteAsync(new LoginReply
             {
-                Status = "ok",
+                Status = "Invalid Login Credentials. Please try again.",
                 Username = request.Username,
-                Characters = { ch }
+                Characters = { }
             });
         }
     }
