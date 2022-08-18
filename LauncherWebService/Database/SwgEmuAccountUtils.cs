@@ -9,7 +9,7 @@ internal static class SwgEmuAccountUtils
     /// Generates a 10 digit Station ID
     /// </summary>
     /// <returns>A 10 digit station ID</returns>
-    private static int GenerateStationId() => new Random().Next(1000000000, 2147483647);
+    public static int GenerateStationId() => new Random().Next(1000000000, 2147483647);
 
     /// <summary>
     /// Generates a random salt string

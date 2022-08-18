@@ -44,6 +44,9 @@ public class SwgEmuAccount
         public int active { get; set; }
         public int admin_level { get; set; }
         public string? salt { get; set; }
+        public string? email { get; set; }
+        public string? discord { get; set; }
+        public int subscribed { get; set; }
     }
 
     [SuppressMessage("ReSharper", "InconsistentNaming")]

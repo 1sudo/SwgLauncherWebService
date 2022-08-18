@@ -8,11 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Protos\login.proto" />
+    <None Remove="Protos\accountcreate.proto" />
+    <None Remove="Protos\accountlogin.proto" />
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\login.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\accountcreate.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\accountlogin.proto" GrpcServices="Server" />
   </ItemGroup>
 
   <ItemGroup>

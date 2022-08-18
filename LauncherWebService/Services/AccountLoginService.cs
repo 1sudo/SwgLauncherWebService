@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LauncherWebService.Services;
 
-public class LoginService : LoginManager.LoginManagerBase
+public class AccountLoginService : AccountLoginManager.AccountLoginManagerBase
 {
     public override async Task? RequestLogin(LoginRequest request, IServerStreamWriter<LoginReply> responseStream, ServerCallContext context)
     {
         await using var db = new SwgEmuAccount.AccountContext();
 
         var account = await db.accounts!.FirstOrDefaultAsync(a => 
-            a.username != null && a.username == request.Username);
+            a.username != null && a.username == request.Username.ToLower());
 
         if (account?.username is null && account?.salt is not null) return;
 
