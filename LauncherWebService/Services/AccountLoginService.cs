@@ -21,6 +21,18 @@ public class AccountLoginService : AccountLoginManager.AccountLoginManagerBase
         {
             var characters = db.characters!.Where(c => c.account_id == account.account_id).ToList();
 
+            // Succeed but return early if no characters
+            if (characters.Count == 0) {
+                await responseStream.WriteAsync(new LoginReply
+                {
+                    Status = "ok",
+                    Username = request.Username,
+                    Characters = { }
+                });
+
+                return;
+            }
+
             // Stream characters
             // Status and user will be sent multiple times, unfortunate side effect. No big deal.
             foreach (var characterName in characters.Select(character => $"{character.firstname} {character.surname}".Trim()))
