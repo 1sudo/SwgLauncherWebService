@@ -1,6 +1,8 @@
 using LauncherWebService.Properties;
 using LauncherWebService.Services;
 using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Extensions.FileProviders;
 
 namespace LauncherWebService;
 
@@ -40,6 +42,20 @@ public class Program
         app.MapGrpcService<AccountLoginService>();
         app.MapGrpcService<AccountCreationService>();
         app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
+
+        var provider = new FileExtensionContentTypeProvider();
+
+        // File extensions defined in appsettings.json
+        Settings?.AllowedFileExtensions?.ToList().ForEach(extension => {
+            provider.Mappings[extension] = "application/octet-stream";
+        });
+
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "files")),
+            RequestPath = "/files",
+            ContentTypeProvider = provider
+        });
 
         app.Run();
     }

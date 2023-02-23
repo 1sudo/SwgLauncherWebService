@@ -1,0 +1,8 @@
+files/*.tre
+files/*.dll
+files/*.cfg
+files/*.iff
+files/*.exe
+files/*.json
+files/miles
+files/manifest/*.json
